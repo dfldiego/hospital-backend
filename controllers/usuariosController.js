@@ -1,6 +1,7 @@
 //importamos el response de express
 const { response } = require('express');
-
+//importar los resultado de las validaciones
+const { validationResult } = require('express-validator');
 //importamos el modelo de usuario
 const Usuario = require('../models/usuario');
 
@@ -21,6 +22,16 @@ exports.getAllUsuarios = async (req, res) => {
 exports.createUsuarios = async (req, res = response) => {
     // hacemos destructuring de los datos introducidos.
     const { nombre, email, password } = req.body;
+
+    // validación adicional: atrapar los errores del middleware de routes.
+    //genero los errores
+    const errores = validationResult(req);
+    if (!errores.isEmpty()) {
+        return res.status(400).json({
+            ok: false,
+            errors: errores.mapped()
+        });
+    }
 
     //validar que email sea unico
     try {
