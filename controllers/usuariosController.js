@@ -1,5 +1,7 @@
 //importamos el response de express
 const { response } = require('express');
+//importamos bcrypt
+const bcrypt = require('bcryptjs');
 //importamos el modelo de usuario
 const Usuario = require('../models/usuario');
 
@@ -36,6 +38,10 @@ exports.createUsuarios = async (req, res = response) => {
 
         // creamos un objeto usuario con los datos introducidos
         const usuario = new Usuario(req.body);
+
+        // encriptar contraseña
+        const salt = bcrypt.genSaltSync();
+        usuario.password = bcrypt.hashSync(password, salt);
 
         // grabar en la BD
         await usuario.save();
