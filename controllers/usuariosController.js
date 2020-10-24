@@ -5,6 +5,63 @@ const bcrypt = require('bcryptjs');
 //importamos el modelo de usuario
 const Usuario = require('../models/usuario');
 
+// Funcion PUT
+exports.putUsuario = async (req, res = response) => {
+
+    //obtener id que viene por URL
+    const uid = req.params.id;
+
+    try {
+
+        // encontrar el usuario con el id pasado por URL en la BD
+        const usuarioDB = await Usuario.findById(uid);
+
+        //si el usuario buscado no existe
+        if (!usuarioDB) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No existe un usuario con ese id'
+            });
+        }
+
+        //TODO: Validar token y comprobar si es el usuario correcto
+
+        // El usuario existe y queremos actualizarlo
+        //actualizaciones
+        // campos que no queremos actualizar password y google
+        const { password, google, email, ...campos } = req.body;
+
+        // usuario no quiere actualizar su email
+        if (usuarioDB.email !== email) {
+            // usuario quiere modificar su email. Verificar que email nuevo no sea igual a otro.
+            const existeEmail = await Usuario.findOne({ email: email });
+            if (existeEmail) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Ya existe un usuario con ese email'
+                });
+            }
+        }
+
+        // debemos colocar el email que queremos actualizar
+        campos.email = email;
+
+        // new: true para actualizar instantaneamente el nuevo usuario
+        const usuarioActualizado = await Usuario.findByIdAndUpdate(uid, campos, { new: true });
+
+        res.json({
+            ok: true,
+            usuario: usuarioActualizado
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado'
+        });
+    }
+}
 
 exports.getAllUsuarios = async (req, res) => {
 
