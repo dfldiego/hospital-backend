@@ -5,6 +5,41 @@ const bcrypt = require('bcryptjs');
 //importamos el modelo de usuario
 const Usuario = require('../models/usuario');
 
+// Funcion DELETE
+exports.deleteUsuario = async (req, res = response) => {
+
+    //obtener id que viene por URL
+    const uid = req.params.id;
+
+    try {
+
+        // encontrar el usuario con el id pasado por URL en la BD
+        const usuarioDB = await Usuario.findById(uid);
+
+        //si el usuario buscado no existe
+        if (!usuarioDB) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No existe un usuario con ese id'
+            });
+        }
+
+        // borrar usuario de la DB
+        await Usuario.findByIdAndDelete(uid);
+
+        res.json({
+            ok: true,
+            msg: 'Usuario Eliminado'
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado..'
+        });
+    }
+}
+
 // Funcion PUT
 exports.putUsuario = async (req, res = response) => {
 
