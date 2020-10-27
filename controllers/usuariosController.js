@@ -107,7 +107,8 @@ exports.getAllUsuarios = async (req, res) => {
 
     res.json({
         ok: true,
-        usuarios
+        usuarios,
+        uid: req.uid
     })
 }
 
