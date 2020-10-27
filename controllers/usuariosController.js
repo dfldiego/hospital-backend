@@ -4,6 +4,7 @@ const { response } = require('express');
 const bcrypt = require('bcryptjs');
 //importamos el modelo de usuario
 const Usuario = require('../models/usuario');
+const { generarJWT } = require('../helpers/jwt');
 
 // Funcion DELETE
 exports.deleteUsuario = async (req, res = response) => {
@@ -138,10 +139,14 @@ exports.createUsuarios = async (req, res = response) => {
         // grabar en la BD
         await usuario.save();
 
+        // GENERAR UN TOKEN -- JWT
+        const token = await generarJWT(usuario.id);
+
         // respuesta del servidor
         res.json({
             ok: true,
-            usuario
+            usuario,
+            token,
         });
 
     } catch (error) {
