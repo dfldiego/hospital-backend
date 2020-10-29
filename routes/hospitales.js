@@ -11,7 +11,11 @@ const hospitalesController = require('../controllers/hospitalesController');
 const router = Router();
 
 router.get('/', hospitalesController.getHospitales);
-router.post('/', [], hospitalesController.createHospitales);
+router.post('/', [
+    validarJWT,
+    check('nombre', 'El nombre del hospital es obligatorio').not().isEmpty(),
+    validarCampos
+], hospitalesController.createHospitales);
 router.put('/:id', [], hospitalesController.putHospitales);
 router.delete('/:id', hospitalesController.deleteHospitales);
 

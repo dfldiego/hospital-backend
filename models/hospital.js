@@ -11,6 +11,7 @@ const HospitalSchema = Schema({
     },
     usuario: {
         type: Schema.Types.ObjectId,
+        required: true,
         ref: 'Usuario',
     }
 }, { collection: 'hospitales' });
