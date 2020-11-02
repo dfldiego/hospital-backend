@@ -101,14 +101,23 @@ exports.putUsuario = async (req, res = response) => {
 
 exports.getAllUsuarios = async (req, res) => {
 
-    // obtener todos los usuarios de la base de datos con metodo find()
-    // find('especificar un filtro, especificar una columna)
-    const usuarios = await Usuario.find({}, 'nombre email role google');
+    //paginacion
+    const desde = Number(req.query.desde) || 0;
+
+    //esto ejecuta todas las promesas de manera simultanea - coleccion de promesas - devuelve un arreglo
+    //desestructuracion de arreglos
+    const [usuarios, total] = await Promise.all([
+        Usuario
+            .find({}, 'nombre email role google')
+            .skip(desde)
+            .limit(5),
+        Usuario.countDocuments()
+    ]);
 
     res.json({
         ok: true,
         usuarios,
-        uid: req.uid
+        total
     })
 }
 
