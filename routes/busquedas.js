@@ -11,5 +11,6 @@ const busquedaController = require('../controllers/busquedasController');
 const router = Router();
 
 router.get('/:busqueda', validarJWT, busquedaController.getTodo);
+router.get('/coleccion/:tabla/:busqueda', validarJWT, busquedaController.getDocumentosColeccion);
 
 module.exports = router;
