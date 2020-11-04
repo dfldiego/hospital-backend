@@ -12,4 +12,6 @@ const router = Router();
 router.use(expressFileUpload());
 router.put('/:tipo/:id', validarJWT, uploadsController.fileUpload);
 
+router.get('/:tipo/:foto', uploadsController.returnImage);
+
 module.exports = router;

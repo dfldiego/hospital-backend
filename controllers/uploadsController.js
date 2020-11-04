@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const { response } = require("express");
 const { v4: uuidv4 } = require('uuid');
 const { actualizarImagen } = require("../helpers/actualizar-imagen");
@@ -66,4 +68,23 @@ exports.fileUpload = (req, res = response) => {
             nombreArchivo
         });
     });
+}
+
+exports.returnImage = (req, res = response) => {
+    const tipo = req.params.tipo;
+    const foto = req.params.foto;
+
+
+    // __dirname: direccion de mi aplicacion 
+    const pathImg = path.join(__dirname, `../uploads/${tipo}/${foto}`);
+
+
+    if (fs.existsSync(pathImg)) {
+        //para que express nos responda con una imagen
+        res.sendFile(pathImg);
+    } else {
+        //imagen no existe -- añadimos imagen por defecto
+        const pathImg = path.join(__dirname, `../uploads/no-img.jpg`);
+        res.sendFile(pathImg);
+    }
 }
