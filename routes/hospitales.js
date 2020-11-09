@@ -21,7 +21,7 @@ router.put('/:id', [
     check('nombre', 'El nombre del hospital es obligatorio').not().isEmpty(),
     validarCampos
 ], hospitalesController.putHospitales);
-router.delete('/:id', hospitalesController.deleteHospitales);
+router.delete('/:id', validarJWT, hospitalesController.deleteHospitales);
 
 module.exports = router;
 
