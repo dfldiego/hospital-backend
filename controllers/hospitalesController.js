@@ -39,11 +39,47 @@ exports.createHospitales = async (req, res = response) => {
     }
 }
 
-exports.putHospitales = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'putHospitales'
-    });
+exports.putHospitales = async (req, res = response) => {
+
+    const id = req.params.id;
+    const uid = req.uid;
+
+    try {
+
+        const hospital = await Hospital.findById(id);
+
+        if (!hospital) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Hospital no encontrado por id',
+            });
+        }
+
+        // hospital existe entonces lo actualizamos
+        const cambiosHospital = {
+            ...req.body,
+            usuario: uid
+        }
+
+        // grabar en la BD
+        const hospitalActualizado = await Hospital.findByIdAndUpdate(id, cambiosHospital, { new: true });
+
+
+        res.json({
+            ok: true,
+            hospital: hospitalActualizado
+        })
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
+
 }
 
 exports.deleteHospitales = (req, res = response) => {
